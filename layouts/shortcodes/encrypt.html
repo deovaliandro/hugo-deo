@@ -2,40 +2,41 @@
 {{ $password := .Page.Params.password }}
 
 {{ if $password }}
-  {{ $passwordHash := crypto.SHA256 $password }}
+{{ $passwordHash := crypto.SHA256 $password }}
 
-  <div class="secure-content my-8 w-full" data-encrypted="{{ $content | base64Encode }}" data-hash="{{ $passwordHash }}">
-    
-    <div class="password-box bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm text-center max-w-md mx-auto">
-      <div class="flex justify-center mb-3 text-3xl">
-        🔒
-      </div>
-      <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">
-        Artikel ini Terkunci
-      </h3>
-      <p class="text-sm text-slate-500 dark:text-slate-400 mb-5">
-        Konten ini dilindungi. Masukkan password untuk membaca.
-      </p>
-      
-      <div class="flex flex-col sm:flex-row gap-2">
-        <input type="password" 
-               class="pass-input flex-1 px-4 py-2.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-transparent text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" 
-               placeholder="Masukkan password..." 
-               onkeydown="if (event.key === 'Enter') { this.nextElementSibling.click(); }">
-               
-        <button onclick="decryptContent(this)" 
-                class="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 whitespace-nowrap">
-          Buka
-        </button>
-      </div>
-      
-      <p class="error-msg text-xs font-medium text-red-500 dark:text-red-400 hidden mt-3 flex items-center justify-center gap-1">
-        ⚠️ Password yang Anda masukkan salah!
-      </p>
+<div class="secure-content my-8 w-full" data-encrypted="{{ $content | base64Encode }}" data-hash="{{ $passwordHash }}">
+
+  <div
+    class="password-box bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 shadow-sm text-center max-w-md mx-auto">
+    <div class="flex justify-center mb-3 text-3xl">
+      🔒
+    </div>
+    <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">
+      Artikel ini Terkunci
+    </h3>
+    <p class="text-sm text-slate-500 dark:text-slate-400 mb-5">
+      Konten ini dilindungi. Masukkan password untuk membaca.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-2">
+      <input type="password"
+        class="pass-input flex-1 px-4 py-2.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-transparent text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+        placeholder="Masukkan password..." onkeydown="if (event.key === 'Enter') { this.nextElementSibling.click(); }">
+
+      <button onclick="decryptContent(this)"
+        class="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 whitespace-nowrap">
+        Buka
+      </button>
     </div>
 
-    <div class="content-display hidden prose dark:prose-invert max-w-none transition-all duration-300"></div>
+    <p
+      class="error-msg text-xs font-medium text-red-500 dark:text-red-400 mt-3 flex items-center justify-center gap-1">
+      ⚠️ Password yang Anda masukkan salah!
+    </p>
   </div>
+
+  <div class="content-display hidden prose dark:prose-invert max-w-none transition-all duration-300"></div>
+</div>
 {{ else }}
-  {{ $content | safeHTML }}
+{{ $content | safeHTML }}
 {{ end }}
