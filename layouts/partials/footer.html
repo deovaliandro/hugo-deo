@@ -1,0 +1,9 @@
+<footer class="mt-8 mb-6 text-center">
+  <p>
+    {{ with .Site.Params.footer }}
+      {{ . }}
+    {{ else }}
+      &copy; {{ now.Format "2006" }} <a href="{{ .Site.BaseURL }}">{{ .Site.Title }}</a>
+    {{ end }}
+  </p>
+</footer>

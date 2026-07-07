@@ -1,0 +1,35 @@
+<header class="pt-8">
+  <!-- Nama -->
+  <h1 class="text-2xl font-bold md:text-4xl">
+    <a href="{{ .Site.BaseURL }}" class="hover:none">
+      {{ .Site.Title }}
+    </a>
+  </h1>
+
+  <!-- Deskripsi -->
+  <p class="mt-6 text-lg">
+    {{ .Site.Params.Description }}
+  </p>
+
+  <!-- Email -->
+  <a
+    href="mailto:{{ .Site.Params.email }}"
+    class="text-lg text-purple-700 hover:underline font-mono">
+    {{ .Site.Params.email }}
+  </a>
+
+  <!-- Navigation -->
+  <nav class="mt-8 font-mono text-lg">
+    <ul class="flex flex-wrap gap-4">
+      {{ range .Site.Menus.main }}
+      <li>
+        <a
+          href="{{ .URL }}"
+          class="text-purple-700 hover:underline">
+          {{ .Name }}
+        </a>
+      </li>
+      {{ end }}
+    </ul>
+  </nav>
+</header>

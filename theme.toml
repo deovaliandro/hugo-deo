@@ -1,0 +1,12 @@
+name = "hugo-deo"
+license = "MIT"
+licenselink = "https://github.com/deovaliandro/hugo-deo/blob/main/LICENSE"
+description = "A clean and modern Hugo theme."
+homepage = "https://github.com/deovaliandro/hugo-deo"
+demosite = "https://example.com"
+
+min_version = "0.161.1"
+
+[author]
+name = "Deo"
+homepage = "https://deo.my.id"

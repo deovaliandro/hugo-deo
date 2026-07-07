@@ -1,0 +1,32 @@
+baseURL = "https://example.org/"
+locale = "en-us"
+title = "My New Hugo Project"
+
+theme = "hugo-deo"
+
+[params]
+author = "Deo"
+description = "Example site untuk pengembangan tema Hugo Deo"
+email = "deo@duck.com"
+footer = "©️ 2026 -  Deo. 🌱 with ❤️‍🔥 from 🌏"
+
+[build]
+writeStats = true
+[build.buildStats]
+enable = true
+
+[menus]
+[[menus.main]]
+name = 'Home'
+pageRef = '/'
+weight = 10
+
+[[menus.main]]
+name = 'Posts'
+pageRef = '/posts'
+weight = 20
+
+[[menus.main]]
+name = 'Tags'
+pageRef = '/tags'
+weight = 30

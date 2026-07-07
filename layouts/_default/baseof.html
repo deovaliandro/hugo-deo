@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    {{ $description := cond .Description .Description (.Summary | plainify) }}
+
+    <meta name="description" content="{{ $description }}" />
+
+    <link rel="icon" type="image/x-icon" href="{{ `img/favicon.ico` | relURL }}" />
+    <link rel="apple-touch-icon" href="{{ `img/favicon.ico` | relURL }}" />
+
+    <meta property="og:image" content="{{ `img/favicon.ico` | absURL }}" />
+    <meta property="og:title" content="{{ .Title }}" />
+    <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
+    <meta property="og:url" content="{{ .Permalink }}" />
+    <meta property="og:description" content="{{ $description }}" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="{{ .Title }}" />
+    <meta name="twitter:description" content="{{ $description }}" />
+    <meta name="twitter:image" content="{{ `img/favicon.ico` | absURL }}" />
+
+    <link rel="canonical" href="{{ .Permalink }}" />
+
+    <title>{{ .Title | default .Site.Title }}</title>
+
+    {{ $css := resources.Get "css/main.css" | css.TailwindCSS }}
+    <link rel="stylesheet" href="{{ $css.RelPermalink }}">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  </head>
+
+  <body class="min-h-screen bg-white font-sans antialiased text-neutral-600">
+    <div class="mx-auto w-full max-w-3xl px-6 md:px-8">
+        {{ partial "header.html" . }}
+        <hr class="mt-1 border-slate-600">
+        <main class="flex-1 py-8">
+            {{ block "main" . }}{{ end }}
+        </main>
+        <hr class="mt-1 border-slate-600">
+        {{ partial "footer.html" . }}
+    </div>
+  </body>
+
+  {{ if .Params.math }}
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="{{ `js/mathjax.js` | relURL }}"></script>
+  {{ end }}
+
+  {{ if .Params.password }}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="{{ `js/encrypt.js` | relURL }}"></script>
+  {{ end }}
+</html>

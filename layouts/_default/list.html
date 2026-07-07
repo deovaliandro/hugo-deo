@@ -1,0 +1,87 @@
+{{ define "main" }}
+
+<div class="mb-12">
+  <div class="
+  max-w-4xl mx-auto
+
+  text-lg
+  leading-8
+
+  [&_h1]:mb-4
+  [&_h1]:text-4xl
+  [&_h1]:font-bold
+
+  [&_h2]:mt-6
+  [&_h2]:mb-4
+  [&_h2]:text-3xl
+  [&_h2]:font-bold
+
+  [&_h3]:mt-4
+  [&_h3]:mb-3
+  [&_h3]:text-2xl
+  [&_h3]:font-semibold
+
+  [&_p]:my-6
+
+  [&_ul]:my-6
+  [&_ul]:list-disc
+  [&_ul]:pl-6
+
+  [&_ol]:my-6
+  [&_ol]:list-decimal
+  [&_ol]:pl-6
+
+  [&_li]:my-1
+
+  [&_a]:text-purple-700
+  [&_a:hover]:underline
+
+  [&_strong]:font-semibold
+
+  [&_img]:rounded-lg
+">
+    {{ .Content }}
+    {{ if .Pages }}
+
+    <ol class="content-card-list">
+
+      {{ $pages := .RegularPages }}
+
+      {{ if eq .Section "blog" }}
+      {{ $pages = $pages.ByDate.Reverse }}
+      {{ else }}
+      {{ $pages = $pages.ByDate }}
+      {{ end }}
+
+      {{ range $pages }}
+
+      <li>
+        <a href="{{ .RelPermalink }}" class="content-card group">
+
+          <span class="content-card-title
+            text-slate-900 transition-colors group-hover:text-slate-600">
+            {{ .Title }}
+          </span>
+
+          <time datetime="{{ .Date.Format " 2006-01-02" }}" class="text-sm text-slate-500">
+            {{ .Date.Format (default "02 Jan 2006" .Site.Params.dateFormat) }}
+          </time>
+
+        </a>
+      </li>
+
+      {{ end }}
+
+    </ol>
+
+    {{ else }}
+
+    <p class="text-slate-500">
+      No posts yet.
+    </p>
+
+    {{ end }}
+  </div>
+</div>
+
+{{ end }}
