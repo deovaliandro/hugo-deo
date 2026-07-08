@@ -8,4 +8,4 @@ Fitur:
 - [x] MathJax
 - [x] Enkripsi posting
 - [ ] Pencarian
-- [ ] Tag
+- [x] Tag
