@@ -28,7 +28,7 @@
   <title>{{ .Title | default .Site.Title }}</title>
 
   {{ $css := resources.Get "css/output.css" }}
-  <link rel="stylesheet" href="{{ $css.RelPermalink }}">>
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 </head>
@@ -79,7 +79,7 @@
     async function loadSearchData() {
       if (isDataLoaded) return;
       try {
-        const res = await fetch('/index.json');
+        const res = await fetch('{{ "index.json" | relURL }}');
         searchData = await res.json();
         isDataLoaded = true;
       } catch (err) {
