@@ -12,9 +12,7 @@
   </p>
 
   <!-- Email -->
-  <a
-    href="mailto:{{ .Site.Params.email }}"
-    class="text-lg text-purple-700 hover:underline font-mono">
+  <a href="mailto:{{ .Site.Params.email }}" class="text-lg text-purple-700 hover:underline font-mono">
     {{ .Site.Params.email }}
   </a>
 
@@ -23,13 +21,47 @@
     <ul class="flex flex-wrap gap-4">
       {{ range .Site.Menus.main }}
       <li>
-        <a
-          href="{{ .URL }}"
-          class="text-purple-700 hover:underline">
+        <a href="{{ .URL }}" class="text-purple-700 hover:underline">
           {{ .Name }}
         </a>
       </li>
       {{ end }}
+      <li>
+        <button id="theme-toggle" class="text-purple-700 dark:text-purple-400 hover:opacity-75 transition-opacity"
+          aria-label="Toggle Dark Mode">
+          <i class="fa-solid fa-moon" id="theme-icon"></i>
+        </button>
+      </li>
+      <li>
+        <button id="search-open"
+          class="text-purple-700 dark:text-purple-400 hover:opacity-75 transition-opacity cursor-pointer"
+          aria-label="Buka Pencarian">
+          <i class="fa-solid fa-search"></i>
+        </button>
+      </li>
     </ul>
   </nav>
 </header>
+
+<script>
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  const html = document.documentElement;
+
+  // Set ikon awal
+  if (html.classList.contains('dark')) {
+    themeIcon.classList.replace('fa-moon', 'fa-sun');
+  }
+
+  themeToggleBtn.addEventListener('click', () => {
+    html.classList.toggle('dark');
+
+    if (html.classList.contains('dark')) {
+      localStorage.setItem('theme', 'dark');
+      themeIcon.classList.replace('fa-moon', 'fa-sun');
+    } else {
+      localStorage.setItem('theme', 'light');
+      themeIcon.classList.replace('fa-sun', 'fa-moon');
+    }
+  });
+</script>

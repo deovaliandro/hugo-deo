@@ -1,0 +1,11 @@
+[
+  {{- $pages := where .Site.RegularPages "Type" "in" (slice "posts" "blog") -}}
+  {{- range $index, $page := $pages -}}
+    {{- if gt $index 0 -}} , {{- end -}}
+    {
+      "title": {{ $page.Title | jsonify }},
+      "permalink": {{ $page.RelPermalink | jsonify }},
+      "date": {{ $page.Date.Format "02 Jan 2006" | jsonify }}
+    }
+  {{- end -}}
+]

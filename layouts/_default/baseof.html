@@ -1,57 +1,161 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    {{ $description := cond .Description .Description (.Summary | plainify) }}
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta name="description" content="{{ $description }}" />
+  {{ $description := cond .Description .Description (.Summary | plainify) }}
 
-    <link rel="icon" type="image/x-icon" href="{{ `img/favicon.ico` | relURL }}" />
-    <link rel="apple-touch-icon" href="{{ `img/favicon.ico` | relURL }}" />
+  <meta name="description" content="{{ $description }}" />
 
-    <meta property="og:image" content="{{ `img/favicon.ico` | absURL }}" />
-    <meta property="og:title" content="{{ .Title }}" />
-    <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
-    <meta property="og:url" content="{{ .Permalink }}" />
-    <meta property="og:description" content="{{ $description }}" />
+  <link rel="icon" type="image/x-icon" href="{{ `img/favicon.ico` | relURL }}" />
+  <link rel="apple-touch-icon" href="{{ `img/favicon.ico` | relURL }}" />
 
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="{{ .Title }}" />
-    <meta name="twitter:description" content="{{ $description }}" />
-    <meta name="twitter:image" content="{{ `img/favicon.ico` | absURL }}" />
+  <meta property="og:image" content="{{ `img/favicon.ico` | absURL }}" />
+  <meta property="og:title" content="{{ .Title }}" />
+  <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
+  <meta property="og:url" content="{{ .Permalink }}" />
+  <meta property="og:description" content="{{ $description }}" />
 
-    <link rel="canonical" href="{{ .Permalink }}" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="{{ .Title }}" />
+  <meta name="twitter:description" content="{{ $description }}" />
+  <meta name="twitter:image" content="{{ `img/favicon.ico` | absURL }}" />
 
-    <title>{{ .Title | default .Site.Title }}</title>
+  <link rel="canonical" href="{{ .Permalink }}" />
 
-    {{ $css := resources.Get "css/main.css" | css.TailwindCSS }}
-    <link rel="stylesheet" href="{{ $css.RelPermalink }}">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
-  </head>
+  <title>{{ .Title | default .Site.Title }}</title>
 
-  <body class="min-h-screen bg-white antialiased text-neutral-600 font-inter">
-    <div class="mx-auto w-full max-w-3xl px-6 md:px-8">
-        {{ partial "header.html" . }}
-        <hr class="mt-1 border-slate-600">
-        <main class="flex-1 py-8">
-            {{ block "main" . }}{{ end }}
-        </main>
-        <hr class="mt-1 border-slate-600">
-        {{ partial "footer.html" . }}
+  {{ $css := resources.Get "css/output.css" }}
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}">>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+
+<body class="min-h-screen bg-white dark:bg-slate-900 antialiased text-neutral-600 dark:text-slate-300 font-inter">
+  <div class="mx-auto w-full max-w-3xl px-6 md:px-8">
+    {{ partial "header.html" . }}
+    <hr class="mt-1 border-slate-600">
+    <main class="flex-1 py-8">
+      {{ block "main" . }}{{ end }}
+    </main>
+    <hr class="mt-1 border-slate-600">
+    {{ partial "footer.html" . }}
+  </div>
+  <div id="search-modal"
+    class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-sm px-4 py-16 sm:px-6 sm:py-24 transition-opacity">
+    <div
+      class="mx-auto max-w-xl rounded-xl bg-white dark:bg-slate-800 shadow-2xl ring-1 ring-black/5 dark:ring-white/10 overflow-hidden flex flex-col">
+
+      <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center gap-4">
+        <i class="fa-solid fa-search text-slate-400"></i>
+        <input type="text" id="search-input"
+          class="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-slate-900 dark:text-slate-100 placeholder-slate-400"
+          placeholder="Cari artikel, topik, atau kata kunci...">
+        <button id="search-close" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer">
+          <i class="fa-solid fa-times text-lg"></i>
+        </button>
+      </div>
+
+      <div id="search-results" class="max-h-96 overflow-y-auto p-2 text-sm text-slate-600 dark:text-slate-300">
+        <div class="text-center text-slate-400 py-8">Ketik sesuatu untuk mulai mencari...</div>
+      </div>
+
     </div>
-  </body>
+  </div>
 
-  {{ if .Params.math }}
-  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script src="{{ `js/mathjax.js` | relURL }}"></script>
-  {{ end }}
+  <script>
+    const searchModal = document.getElementById('search-modal');
+    const searchOpen = document.getElementById('search-open');
+    const searchClose = document.getElementById('search-close');
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
 
-  {{ if .Params.password }}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="{{ `js/encrypt.js` | relURL }}"></script>
-  {{ end }}
+    let searchData = [];
+    let isDataLoaded = false;
+
+    // Fungsi memuat data JSON hanya saat modal dibuka (menghemat bandwith)
+    async function loadSearchData() {
+      if (isDataLoaded) return;
+      try {
+        const res = await fetch('/index.json');
+        searchData = await res.json();
+        isDataLoaded = true;
+      } catch (err) {
+        searchResults.innerHTML = '<div class="text-center text-red-500 py-8">Gagal memuat data pencarian.</div>';
+      }
+    }
+
+    // Buka Modal
+    searchOpen.addEventListener('click', () => {
+      searchModal.classList.remove('hidden');
+      searchInput.focus();
+      loadSearchData();
+    });
+
+    // Tutup Modal
+    const closeModal = () => searchModal.classList.add('hidden');
+    searchClose.addEventListener('click', closeModal);
+
+    // Tutup saat area luar (backdrop) diklik atau tombol 'Escape' ditekan
+    searchModal.addEventListener('click', (e) => {
+      if (e.target === searchModal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !searchModal.classList.contains('hidden')) closeModal();
+    });
+
+    // Logika Pencarian
+    searchInput.addEventListener('input', function (e) {
+      const query = e.target.value.toLowerCase().trim();
+
+      if (!query) {
+        searchResults.innerHTML = '<div class="text-center text-slate-400 py-8">Ketik sesuatu untuk mulai mencari...</div>';
+        return;
+      }
+
+      const results = searchData.filter(item =>
+        item.title.toLowerCase().includes(query) ||
+        item.content.toLowerCase().includes(query)
+      );
+
+      if (results.length === 0) {
+        searchResults.innerHTML = '<div class="text-center text-slate-400 py-8">Tidak ada artikel yang cocok dengan <b>"' + query + '"</b></div>';
+        return;
+      }
+
+      // Render hasil pencarian
+      searchResults.innerHTML = 
+      '<div class="flex flex-col gap-3 p-2">' + results.map(item => `
+        <a href="${item.permalink}" 
+           class="block w-full px-5 py-4 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/40 shadow-sm hover:border-purple-600 dark:hover:border-purple-400 hover:shadow-md transition-all duration-200 group">
+           <h4 class="text-lg font-medium text-slate-800 dark:text-slate-100 group-hover:text-purple-700 dark:group-hover:text-purple-400 transition-colors m-0 p-0">
+          ${item.title}
+        </h4>
+      </a>
+    `).join('') + '</div>';
+    });
+  </script>
+</body>
+
+{{ if .Params.math }}
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="{{ `js/mathjax.js` | relURL }}"></script>
+{{ end }}
+
+{{ if .Params.password }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="{{ `js/encrypt.js` | relURL }}"></script>
+{{ end }}
+<script>
+  // Cek preferensi lokal atau sistem
+  if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+</script>
+
 </html>
