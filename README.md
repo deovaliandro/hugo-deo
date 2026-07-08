@@ -11,5 +11,6 @@ Fitur:
 - [x] Enkripsi posting
 - [ ] Pencarian
 - [x] Tag
+- [ ] Dark/Light
 
 logo dibuat dengan bantuan Gemini.
