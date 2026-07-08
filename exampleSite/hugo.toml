@@ -2,7 +2,7 @@ baseURL = "https://example.org/"
 locale = "en-us"
 title = "My New Hugo Project"
 
-theme = "hugo-deo"
+theme = ".."
 
 [params]
 author = "Deo"
@@ -30,3 +30,7 @@ weight = 20
 name = 'Tags'
 pageRef = '/tags'
 weight = 30
+
+[taxonomies]
+tag = "tags"
+category = "categories"
